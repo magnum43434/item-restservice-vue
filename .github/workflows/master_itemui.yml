@@ -21,7 +21,7 @@ jobs:
         node-version: '12.13.0'
 
     - name: npm install, build
-      run: |
+      run:
         npm install
         npm run build
 
