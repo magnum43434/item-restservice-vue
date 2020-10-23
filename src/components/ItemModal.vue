@@ -46,7 +46,7 @@ import {Vue} from "vue-class-component";
 import {Prop, Watch} from "vue-property-decorator"
 
 export default class ItemModal extends Vue {
-  private state = true
+  private state = false
 
   @Prop({default: false})
   propState: any

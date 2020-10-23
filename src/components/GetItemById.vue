@@ -18,7 +18,7 @@
 import {getItem} from "@/components/Functions/APIFunctionsItem";
 import json2list from "@/components/Functions/JsonToList";
 import {Vue} from "vue-class-component";
-import ItemModal from './ItemModal.vue';
+
 
 export default class GetItemById extends Vue {
   private uri = "https://itemrestservice.azurewebsites.net/api/items"
