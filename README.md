@@ -1,4 +1,5 @@
 # item-restservice-vue
+![.github/workflows/azure.yml](https://github.com/magnum43434/item-restservice-vue/workflows/.github/workflows/azure.yml/badge.svg)
 
 ## Project setup
 ```
