@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import {Vue} from "vue-class-component";
-import {deleteItem} from "@/components/Functions/APIFunctionsItem";
+import {deleteItem} from "@/Functions/APIFunctionsItem";
 import {AxiosError} from "axios";
 
 export default class DeleteItem extends Vue {

@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import {Vue} from "vue-class-component";
-import {getItems, postItem} from './Functions/APIFunctionsItem';
-import item from "@/components/Models/item";
+import {getItems, postItem} from '../Functions/APIFunctionsItem';
+import item from "@/Models/item";
 import {AxiosError} from "axios";
 
 export default class PostItem extends Vue {

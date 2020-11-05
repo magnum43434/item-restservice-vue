@@ -7,16 +7,12 @@
 </template>
 
 <script lang="ts">
-import item from "./Models/item";
-import {getItems} from './Functions/APIFunctionsItem'
-import json2table from './Functions/JsonToTable'
-import {Vue} from "vue-class-component";
-
-
+import { getItems } from "@/Functions/APIFunctionsItem";
+import json2table from "../Functions/JsonToTable";
+import { Vue } from "vue-class-component";
 
 export default class GetAllItems extends Vue {
   private uri = "https://itemrestservice.azurewebsites.net/api/items"
-  private item: Array<item> = []
   private div = ""
 
   private async GetItems(): Promise<void> {

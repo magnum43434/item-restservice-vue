@@ -2,35 +2,43 @@
   <div class="container">
     <div class="row">
       <div class="col">
-        <GetAllItems/>
+        <GetAllItems />
       </div>
       <div class="col">
-        <GetItemById/>
+        <GetItemById
+          @openmodal="changeModalState"
+          @selecteditem="changeSelectedItem"
+        />
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <PostItem/>
+        <PostItem />
       </div>
       <div class="col">
-        <DeleteItem/>
+        <DeleteItem />
       </div>
     </div>
   </div>
-  <ItemModal id="modal"/>
+  <ItemModal
+    id="modal"
+    :ModalShowStateProp="modalState"
+    :SelectedItemProp="selctedItem"
+  />
 </template>
 
+//TODO: Remove link
 <!--
 https://blog.logrocket.com/how-to-write-a-vue-js-app-completely-in-typescript/
 -->
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import GetAllItems from './components/GetAllItems.vue';
-import GetItemById from './components/GetItemById.vue';
-import PostItem from './components/PostItem.vue';
-import DeleteItem from './components/DeleteItem.vue'
-import ItemModal from './components/ItemModal.vue'
+import GetAllItems from "./Components/GetAllItems.vue";
+import GetItemById from "./Components/GetItemById.vue";
+import PostItem from "./Components/PostItem.vue";
+import DeleteItem from "./Components/DeleteItem.vue";
+import ItemModal from "./Components/ItemModal.vue";
 
 @Options({
   components: {
@@ -41,7 +49,18 @@ import ItemModal from './components/ItemModal.vue'
     ItemModal
   }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  private modalState = false;
+  private selctedItem: any;
+
+  private changeModalState(state: any): void {
+    this.modalState = state;
+  }
+
+  private changeSelctedItem(item: any): void {
+    this.selctedItem = item;
+  }
+}
 </script>
 
 <style lang="scss">
@@ -62,7 +81,7 @@ export default class App extends Vue {}
   z-index: 10;
 }
 
-.container{
+.container {
   position: absolute;
   left: 50%;
   top: 25%;
