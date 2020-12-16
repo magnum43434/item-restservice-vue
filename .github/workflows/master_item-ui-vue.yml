@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - itemui
+name: Build and deploy Node.js app to Azure Web App - item-ui-vue
 
 on:
   push:
@@ -20,15 +20,16 @@ jobs:
       with:
         node-version: '12.13.0'
 
-    - name: npm install, build
-      run:
+    - name: npm install, build, and test
+      run: |
         npm install
-        npm run build
+        npm run build --if-present
+        npm run test --if-present
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'itemui'
+        app-name: 'item-ui-vue'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_34780495464c49e5849e30eaaacde031 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_e343685e33ef442bb723f9bb529e2565 }}
         package: .

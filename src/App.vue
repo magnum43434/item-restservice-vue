@@ -1,14 +1,17 @@
 <template>
-  <div class="container mt-2">
+  <div class="container">
     <div class="row">
       <div class="col">
-        <GetAllItems @show-modal="onClickChild" />
+        <GetAllItems />
+      </div>
+      <div class="col">
+        <GetItemById
+          @openmodal="changeModalState"
+          @selecteditem="changeSelectedItem"
+        />
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <GetItemById />
-      </div>
       <div class="col">
         <PostItem />
       </div>
@@ -16,44 +19,51 @@
         <DeleteItem />
       </div>
     </div>
-    <ItemModal :item="item" />
   </div>
+  <ItemModal
+    id="modal"
+    :ModalShowStateProp="modalState"
+    :SelectedItemProp="selctedItem"
+  />
 </template>
 
+//TODO: Remove link
 <!--
 https://blog.logrocket.com/how-to-write-a-vue-js-app-completely-in-typescript/
 -->
 
 <script lang="ts">
-import GetAllItems from "./components/GetAllItems.vue";
-import GetItemById from "./components/GetItemById.vue";
-import PostItem from "./components/PostItem.vue";
-import DeleteItem from "./components/DeleteItem.vue";
-import ItemModal from "./components/ItemModal.vue";
-import { ref } from "vue";
+import { Options, Vue } from "vue-class-component";
+import GetAllItems from "./Components/GetAllItems.vue";
+import GetItemById from "./Components/GetItemById.vue";
+import PostItem from "./Components/PostItem.vue";
+import DeleteItem from "./Components/DeleteItem.vue";
+import ItemModal from "./Components/ItemModal.vue";
 
-export default {
+@Options({
   components: {
     GetAllItems,
     GetItemById,
     PostItem,
     DeleteItem,
-    ItemModal,
-  },
-  setup() {
-    const item = ref();
-    const onClickChild = (value: any) => {
-      item.value = value;
-    };
-    return {
-      item,
-      onClickChild,
-    };
-  },
-};
+    ItemModal
+  }
+})
+export default class App extends Vue {
+  private modalState = false;
+  private selctedItem: any;
+
+  private changeModalState(state: any): void {
+    this.modalState = state;
+  }
+
+  private changeSelctedItem(item: any): void {
+    this.selctedItem = item;
+  }
+}
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -64,12 +74,28 @@ export default {
   color: #2c3e50;
 }
 
+#modal {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  z-index: 10;
+}
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, -25%);
+}
+
 .col {
   border: 1px solid black;
   min-height: 200px;
 }
 
 button {
+  margin-top: 5px;
+  margin-bottom: 25px;
   width: 100%;
 }
 
@@ -83,8 +109,5 @@ label {
   margin-top: 5px;
   margin-bottom: 5px;
   padding: 0px;
-}
-h5 {
-  color: white;
 }
 </style>
