@@ -1,20 +1,18 @@
 <template>
-  <div id="container" v-show="ModalShowState">
-    <div id="background" class="text-center">
-      <div id="modal-container">
-        <div>
-          <!-- Modal body -->
-          <div id="modalBodyData"></div>
+  <div
+    class="modal fade"
+    id="modal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Update item</h3>
+        </div>
+        <div class="modal-body">
           <div>
-            <h3>Delete item</h3>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="ModalDeleteItemButton"
-            >
-              Delete
-            </button>
-            <h3>Update item</h3>
             <div class="input-group mb3">
               <div class="input-group-prepend">
                 <label class="input-group-text" for="UpdateItemInputName"
@@ -26,6 +24,7 @@
                 id="UpdateItemInputName"
                 class="form-control"
                 placeholder="Name"
+                v-model="name"
               />
             </div>
             <div class="input-group mb3">
@@ -39,6 +38,7 @@
                 id="UpdateItemInputQuality"
                 class="form-control"
                 placeholder="Quality"
+                v-model="quality"
               />
             </div>
             <div class="input-group mb3">
@@ -52,22 +52,16 @@
                 id="UpdateItemInputQuantity"
                 class="form-control"
                 placeholder="Quantity"
+                v-model="quantity"
               />
             </div>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="ModalUpdateItemButton"
-            >
-              Update
-            </button>
+            <button type="button" class="btn btn-primary mt-2">Update</button>
           </div>
-          <!-- Modal Footer -->
-          <div class="modal-footer">
-            <button v-on:click="UpdateModal" type="button" class="close btn">
-              Close
-            </button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
         </div>
       </div>
     </div>
@@ -75,56 +69,25 @@
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
-import { Prop, Watch } from "vue-property-decorator";
-import json2list from "@/Functions/JsonToList";
+import { ref } from "vue";
 
-export default class ItemModal extends Vue {
-  private ModalShowState = false;
-  private div = "";
+export default {
+  props: {
+    item: null,
+  },
+  setup(props: any) {
+    // const name = ref(props.item.name);
+    // const quality = ref(props.item.quality);
+    // const quantity = ref(props.item.quantity);
 
-  @Prop({ default: false })
-  ModalShowStateProp: any;
-
-  @Prop()
-  SelectedItemProp: any;
-
-  @Watch("ModalShowStateProp")
-  onModalShowStateChanged(value: string, oldValue: string) {
-    this.ModalShowState = Boolean(value);
-  }
-
-  @Watch("SelectedItemProp")
-  onSelectedItemChanged(value: any, oldValue: any) {
-    console.log(value, oldValue);
-    this.div = json2list(value);
-  }
-
-  UpdateModal() {
-    this.ModalShowState = !this.ModalShowState;
-  }
-}
+    return {
+      // name,
+      // quality,
+      // quantity,
+    };
+  },
+};
 </script>
 
 <style scoped>
-#background {
-  backdrop-filter: blur(6px);
-  height: 100vh;
-}
-
-#modalBodyData {
-  min-height: 200px;
-}
-
-#modal-container {
-  border: 2px solid black;
-  background: white;
-  width: 35%;
-  height: 75%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 1px 2%;
-}
 </style>
