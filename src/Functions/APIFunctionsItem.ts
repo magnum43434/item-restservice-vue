@@ -1,4 +1,4 @@
-import item from '../Models/item'
+import item from '../Models/ItemModel'
 import axios from "axios";
 
 export async function getItems(url: string) {

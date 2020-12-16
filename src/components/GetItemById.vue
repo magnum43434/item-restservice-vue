@@ -5,33 +5,64 @@
       <div class="input-group-prepend">
         <label for="GetItemInput" class="input-group-text">ID</label>
       </div>
-      <input v-model="userInput" type="number" id="GetItemInput" class="form-control" placeholder="ID">
-      <button v-on:click="GetItem" id="GetItemButton" class="btn btn-primary">Get
-        item by id
+      <input
+        v-model="userInput"
+        type="number"
+        id="GetItemInput"
+        class="form-control"
+        placeholder="ID"
+        @wheel="InputScroll($event)"
+      />
+      <button
+        v-on:click="GetItem"
+        id="GetItemButton"
+        class="btn btn-primary mb-2 mt-2"
+      >
+        Get item by id
       </button>
-      <div v-html="div" class="text-center"></div>
+      <div v-if="item" class="mb-1">
+        <ItemComp :item="item" :deleteButton="false" />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {getItem} from "@/components/Functions/APIFunctionsItem";
-import json2list from "@/components/Functions/JsonToList";
-import {Vue} from "vue-class-component";
+import ItemComp from "./ItemComp.vue";
+import { getItem } from "@/Functions/APIFunctionsItem";
+import json2list from "@/Functions/JsonToList";
+import { ref } from "vue";
 
+export default {
+  components: {
+    ItemComp,
+  },
+  setup() {
+    const uri = "https://itemrestservice.azurewebsites.net/api/items";
+    const userInput = ref(0);
+    const item = ref();
 
-export default class GetItemById extends Vue {
-  private uri = "https://itemrestservice.azurewebsites.net/api/items"
-  private userInput = 1
-  private div = ""
+    const GetItem = async (): Promise<void> => {
+      const response = await getItem(uri, Number(userInput.value));
+      item.value = response.data;
+    };
+    const InputScroll = (event: any) => {
+      if (event.deltaY == -100) {
+        userInput.value = Number(userInput.value) + 1;
+      } else if (event.deltaY == 100 && userInput.value > 0) {
+        userInput.value = Number(userInput.value) - 1;
+      }
+    };
 
-  private async GetItem(): Promise<void> {
-    const response = await getItem(this.uri, Number(this.userInput));
-    this.div = `<h1>Item with id: ${this.userInput}</h1>${json2list(response.data)}`;
-  }
-}
+    return {
+      GetItem,
+      InputScroll,
+      userInput,
+      item,
+    };
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

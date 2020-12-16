@@ -3,34 +3,61 @@
     <h3>Delete item by id</h3>
     <div class="input-group mb3">
       <div class="input-group-prepend">
-        <label class="input-group-text" id="basic-addon1" for="DeleteItemInput">ID</label>
+        <label class="input-group-text" id="basic-addon1" for="DeleteItemInput"
+          >ID</label
+        >
       </div>
-      <input v-model="id" type="number" id="DeleteItemInput" class="form-control" placeholder="ID">
-      <button v-on:click="DeleteItem" class="btn btn-primary">Delete item by id</button>
+      <input
+        v-model="userInput"
+        type="number"
+        id="DeleteItemInput"
+        class="form-control"
+        placeholder="ID"
+        @wheel="InputScroll($event)"
+      />
+      <button v-on:click="DeleteItem" class="btn btn-primary mb-2 mt-2">
+        Delete item by id
+      </button>
     </div>
-    <div v-html="div" class="d-flex justify-content-center"></div>
+    <div v-if="status" class="mb-1 text-left">
+      <h2>Status: {{ status }}</h2>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import {Vue} from "vue-class-component";
-import {deleteItem} from "@/components/Functions/APIFunctionsItem";
-import {AxiosError} from "axios";
+import { deleteItem, getItem } from "@/Functions/APIFunctionsItem";
+import { AxiosError } from "axios";
+import { ref } from "vue";
 
-export default class DeleteItem extends Vue {
-  private uri = "https://itemrestservice.azurewebsites.net/api/items"
-  private id = 1
-  private div = ""
+export default {
+  setup() {
+    const uri = "https://itemrestservice.azurewebsites.net/api/items";
+    const userInput = ref(0);
+    const status = ref();
 
-  private async DeleteItem(): Promise<void> {
-    await deleteItem(this.uri, this.id).catch((error: AxiosError) => {
-      this.div = `<div class="card text-center text-white bg-dark border-danger" style="width: 18rem;"><div class="card-header">Error</div><div class="card-body"><h5 class="card-title">${error.name}</h5><p class="card-text">${error.message}</p></div></div>`
-    })
-    this.div = `<div class="card text-center text-white bg-dark border-success" style="width: 18rem;"><div class="card-header">Success</div><div class="card-body"><p class="card-text">Item with ID ${this.id} has been deleted</p></div></div>`
-  }
-}
+    const DeleteItem = async (): Promise<void> => {
+      const responseDelete = await deleteItem(uri, userInput.value);
+      status.value = responseDelete.statusText == "OK" ? "Deleted" : "Error";
+    };
+
+    const InputScroll = (event: any) => {
+      if (event.deltaY == -100) {
+        userInput.value = Number(userInput.value) + 1;
+      } else if (event.deltaY == 100 && userInput.value > 0) {
+        userInput.value = Number(userInput.value) - 1;
+      }
+    };
+
+    return {
+      userInput,
+      DeleteItem,
+      InputScroll,
+      status,
+    };
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

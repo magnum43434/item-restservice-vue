@@ -5,56 +5,95 @@
       <div class="input-group-prepend">
         <label class="input-group-text" for="PostItemInputName">Name</label>
       </div>
-      <input v-model="name" type="text" id="PostItemInputName" class="form-control" placeholder="Name">
+      <input
+        v-model="name"
+        type="text"
+        id="PostItemInputName"
+        class="form-control"
+        placeholder="Name"
+      />
     </div>
     <div class="input-group mb3">
       <div class="input-group-prepend">
-        <label class="input-group-text" for="PostItemInputQuality">Quality</label>
+        <label class="input-group-text" for="PostItemInputQuality"
+          >Quality</label
+        >
       </div>
-      <input v-model="quality" type="text" id="PostItemInputQuality" class="form-control" placeholder="Quality">
+      <input
+        v-model="quality"
+        type="text"
+        id="PostItemInputQuality"
+        class="form-control"
+        placeholder="Quality"
+      />
     </div>
     <div class="input-group mb3">
       <div class="input-group-prepend">
-        <label class="input-group-text" for="PostItemInputQuantity">Quantity</label>
+        <label class="input-group-text" for="PostItemInputQuantity"
+          >Quantity</label
+        >
       </div>
-      <input v-model="quantity" type="number" id="PostItemInputQuantity" class="form-control" placeholder="Quantity">
+      <input
+        v-model="quantity"
+        type="number"
+        id="PostItemInputQuantity"
+        class="form-control"
+        placeholder="Quantity"
+        @wheel="InputScroll($event)"
+      />
     </div>
-    <button v-on:click="PostItem" class="btn btn-primary">Post new item</button>
-    <div v-html="div" class="d-flex justify-content-center"></div>
+    <button v-on:click="PostItem" class="btn btn-primary mb-2 mt-2">
+      Post new item
+    </button>
+    <div v-if="status" class="mb-1 text-left">
+      <h2>Status: {{ status }}</h2>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import {Vue} from "vue-class-component";
-import {getItems, postItem} from './Functions/APIFunctionsItem';
-import item from "@/components/Models/item";
-import {AxiosError} from "axios";
+import { getItems, postItem } from "@/Functions/APIFunctionsItem";
+import ItemModel from "@/Models/ItemModel";
+import { ref } from "vue";
 
-export default class PostItem extends Vue {
-  private uri = "https://itemrestservice.azurewebsites.net/api/items";
-  private name = "";
-  private quality = "";
-  private quantity = 0;
-  private div = "";
+export default {
+  setup() {
+    const uri = "https://itemrestservice.azurewebsites.net/api/items";
+    const name = ref("");
+    const quality = ref("");
+    const quantity = ref(0);
+    const status = ref();
 
-  private async PostItem(): Promise<void> {
-    const ItemListCount = await getItems(this.uri);
-    const item: item = {
-      Id: ItemListCount.data.length + 1,
-      Name: this.name,
-      Quality: this.quality,
-      Quantity: this.quantity
+    const PostItem = async (): Promise<void> => {
+      const ItemListCount = await getItems(uri);
+      const item = new ItemModel(
+        ItemListCount.data.length + 1,
+        name.value,
+        quality.value,
+        quantity.value
+      );
+      const response = await postItem(uri, item);
+      status.value = response.statusText == "OK" ? "Created" : "Error";
+      name.value = "";
+      quality.value = "";
+      quantity.value = 0;
     };
-    console.log(item)
-    const response = await postItem(this.uri, item).catch((error: AxiosError) => {
-      this.div = `<div class="card text-center text-white bg-dark border-danger" style="width: 18rem;"><div class="card-header">Error</div><div class="card-body"><h5 class="card-title">${error.name}</h5><p class="card-text">${error.message}</p></div></div>`;
-    });
-    console.log(response)
-    this.div = `<div class="card text-center text-white bg-dark border-success" style="width: 18rem;"><div class="card-header">Success</div><div class="card-body"><p class="card-text">ID: ${item.Id}</p><p class="card-text">Name: ${item.Name}</p><p class="card-text">Quality: ${item.Quality}</p><p class="card-text">Quantity: ${item.Quantity}</p></div></div>`;
-  }
-}
+    const InputScroll = (event: any) => {
+      if (event.deltaY == -100) {
+        quantity.value = Number(quantity.value) + 1;
+      } else if (event.deltaY == 100 && quantity.value > 0) {
+        quantity.value = Number(quantity.value) - 1;
+      }
+    };
+
+    return {
+      name,
+      quality,
+      quantity,
+      PostItem,
+      InputScroll,
+      status,
+    };
+  },
+};
 </script>
-
-<style scoped>
-
-</style>
